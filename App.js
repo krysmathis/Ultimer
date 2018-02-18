@@ -9,11 +9,18 @@ import {
   TouchableOpacity, Picker, FlatList,
   NavigatorIOS,
   AsyncStorage,
-  Overlay
+  Overlay,
 } from 'react-native';
 import { Button, Icon } from 'react-native-elements';
 import Modal from "react-native-modal";
 import TimerList from './TimerList.js';
+import { StackNavigator, TabNavigator } from 'react-navigation';
+// import the screens
+import AddTimersScreen from './AddTimers';
+
+
+
+
 
 // uuid Generatory
 const uuidGenerator = function* () {
@@ -37,7 +44,10 @@ const instructions = Platform.select({
     'Shake or press menu button for dev menu',
 });
 
-export default class App extends Component {
+
+
+
+class TimerContainerScreen extends Component {
   
   constructor(props) {
     super(props);
@@ -50,13 +60,15 @@ export default class App extends Component {
       time: "",
       id: "",
       updateMode: false,
-      isModalVisible: false
     }
     // handle the binding of the input forms 'this' is available
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
   }
 
+  static navigationOptions = {
+    title: 'Home',
+  };
   // Updating the record of when the user logs in
   componentWillMount(){
     
@@ -80,7 +92,7 @@ export default class App extends Component {
   }
   
   // Send data up to the database
-  handlePost(name, time) {
+  handlePost = (name, time) => {
     
     let timerArray = [];
 
@@ -117,10 +129,10 @@ export default class App extends Component {
       }).done();
   }
 
-  handlePut = () => {
+  handlePut = (id, title, time) => {
 
-    const name = this.state.title;
-    const limit = this.state.time;
+    const name = title;
+    const limit = time;
 
     AsyncStorage.getItem("timers").then((value) => {
       
@@ -128,7 +140,7 @@ export default class App extends Component {
       timerArray = JSON.parse(value);
 
       // pull the old timer and update it
-      const index = timerArray.findIndex(i => i.key === this.state.id);
+      const index = timerArray.findIndex(i => i.key === id);
       
       timerArray[index].name = name;
       timerArray[index].limit = limit;
@@ -178,11 +190,13 @@ export default class App extends Component {
 
   handleUpdate = (timerObj) => {
     
-    this.setState({
+    // navigate to add timers and pass in the necessary props
+    this.props.navigation.navigate('AddTimers', {
       updateMode: true,
       title: timerObj.title,
       time: timerObj.time,
-      id: timerObj.id
+      id: timerObj.id,
+      handlePut: this.handlePut
     });
 
   }
@@ -223,53 +237,24 @@ export default class App extends Component {
     return <TimerList timers={this.state.storedTimers} delete={this.handleDelete} update={this.handleUpdate}/>
   }
 
-  _toggleModal = () => {
-    if (this.state.isModalVisible === true) {
-      this.setState({
-        isModalVisible: false
-      });
-    } else {
-      this.setState({
-        isModalVisible: true
-      });
-    }
-  }
-  
   displayForm() {  
     /*
     iOS uses TextInput fields to hold data input
     */
     return (
-        <View style={styles.main}>
-            
-          <View>
-            <View style={styles.row}>
-              <TextInput style={styles.nameInput} type="text" placeholder="Name" name="title" label="Timer Name" value={this.state.title} onChangeText={this.handleNameChange} />
-              <TextInput style={styles.input} type="text" placeholder="Time" name="time" label="Time Limit" value={this.state.time} onChangeText={this.handleTimeChange} />
-            </View>
-          </View>
+        <View style={styles.main}>            
+  
               <TouchableOpacity
                   style = {styles.submitButton}
-                  onPress = {this._toggleModal}>
+                  // onPress = {this.handleSubmit}>
+                  onPress = {() => this.props.navigation.navigate('AddTimers',{
+                    handlePost: this.handlePost,
+                    title: this.state.name,
+                    time: this.state.time
+                  })}>
                <Text style = {styles.submitButtonText}> Add New </Text>
-               
              </TouchableOpacity>
-             <Modal isVisible={this.state.isModalVisible}>
-              <View style={styles.modal}>
-                <Text>Hello!</Text>
-                <TextInput style={styles.nameInput} type="text" placeholder="Name" name="title" label="Timer Name" value={this.state.title} onChangeText={this.handleNameChange} />
-              <TextInput style={styles.input} type="text" placeholder="Time" name="time" label="Time Limit" value={this.state.time} onChangeText={this.handleTimeChange} />
-
-                <TouchableOpacity 
-                  style = {styles.submitButton}
-                  onPress={this._toggleModal}>
-                  <Text>Hide me!</Text>
-                  <Text style = {styles.submitButtonText}> Add New </Text>
-                </TouchableOpacity>
-              </View>
-            </Modal>
-              {/* <Button title="Click" floating large className='red' waves='light' icon='add' type="submit" onPress={this.handleSubmit} value="">Click</Button> */}
-
+            
         </View>
           
     );
@@ -278,26 +263,40 @@ export default class App extends Component {
   
   render() {
     return (
-     
-      <View style={styles.container}>
-       <NavigatorIOS
-          style={styles.navigation}
-          initialRoute={{
-          title: 'My Timers',
-          component: TimerList,
-          }}/>
-        
+      <View style={styles.container}>        
         { this.displayForm() }
-        {this.state.isLoading === true ? <Text>Loading...</Text> : this.generateTimers() }
-
+        { this.state.isLoading === true ? <Text>Loading...</Text> : this.generateTimers() }
       </View>
     );
   }
 }
 
+const RootStack = StackNavigator (
+  {
+    Home: {
+      screen: TimerContainerScreen,
+    },
+    AddTimers: {
+      screen: AddTimersScreen,
+    },
+  },
+  {
+    initialRouteName: 'Home',
+  },
+);
+
+export default class App extends React.Component {
+  render() {
+  return (<RootStack title="hello"/>);
+  }
+}
+
 const styles = StyleSheet.create({
   main: {
-    backgroundColor: 'white'
+    // position: 'absolute',
+    // bottom: 0,
+    // left: 0
+    // backgroundColor: 'white'
   },
   modal: {
     flex: 1,

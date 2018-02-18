@@ -15,6 +15,7 @@ import {
     Image,
     TouchableOpacity
   } from 'react-native';
+  
   import KeepAwake from 'react-native-keep-awake';
 /*
     The TimerList component generates the TimerListItems
@@ -26,13 +27,15 @@ class TimerList extends React.Component {
             runningTimers: []
         }
     }
-    
+
     /*
         If there are active timers, then keep the app awake
         Params: the unique id of the timer
         Source: the toggle function in the TimerItem component
     */
     addTimer = (timerId) => {
+
+        
 
         const prevState = Object.assign({}, this.state);
         prevState.runningTimers.push(timerId)
