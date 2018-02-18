@@ -5,8 +5,12 @@ import {
   Text,
   View,
   TextInput,
-  TouchableOpacity
+  TouchableOpacity,
+  Picker
 } from 'react-native';
+import MyTimePicker from './MyTimePicker';
+ 
+
 
 
 class AddTimerScreen extends React.Component {
@@ -23,6 +27,8 @@ class AddTimerScreen extends React.Component {
                 time: "",
                 id: "",
                 updateMode: false,
+                selectedMinutes: 0,
+                selectedSeconds: 0,
         }
         // handle the binding of the input forms 'this' is available
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -30,6 +36,11 @@ class AddTimerScreen extends React.Component {
         
     }
 
+    getSecondsAfterMinutesRemoved = (seconds) => {
+        const minutes = (Math.floor((parseInt(seconds))/60));
+        const minutesToSeconds = minutes * 60;
+        return parseInt(seconds) - minutesToSeconds;
+    }
     componentWillMount = () => {
 
         const { params } = this.props.navigation.state;
@@ -37,13 +48,16 @@ class AddTimerScreen extends React.Component {
         const _time = params ? params.time : '';
         const _updateMode = params ? params.updateMode : false;
         const _id = params ? params.id : null;
+        const _selectedMinutes = params ? Math.floor((parseInt(params.time)/60)) : 0;
+        const _selectedSeconds = params ? this.getSecondsAfterMinutesRemoved(parseInt(params.time)) : 0;
         
         this.setState({
             title: _title,
             time: _time,
             id: _id,
-            updateMode: _updateMode
-
+            updateMode: _updateMode,
+            selectedMinutes: _selectedMinutes,
+            selectedSeconds: _selectedSeconds
         });
     }
       
@@ -67,7 +81,7 @@ class AddTimerScreen extends React.Component {
         const { params } = this.props.navigation.state;
         const handlePost = params ? params.handlePost : null;
         const handlePut = params ? params.handlePut : null;
-        
+        console.log("time check: ", this.state.selectedSeconds)
         console.log("params: ", params);
         console.log("HandleSubmit: ", this.props);
         console.log('Checking for null ', this.state);
@@ -88,18 +102,30 @@ class AddTimerScreen extends React.Component {
         });
 
         this.props.navigation.goBack();
+        }
+
     }
 
+    timePickerChange = (minutes, seconds) => {
+        
+        const _minutes = minutes ? minutes : "0";
+        const _seconds = seconds ? seconds : "0";
+
+        this.setState({
+            time: ((parseInt(_minutes) * 60) + parseInt(_seconds)).toString()
+        });
     }
 
     render() {
         
-        
+        selectedMinutes = this.state.selectedMinutes;
+        selectedSeconds = this.state.selectedSeconds;
+
         return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <View style={styles.row}>
                 <TextInput style={styles.nameInput} type="text" placeholder="Name" name="title" label="Timer Name" value={this.state.title} onChangeText={this.handleNameChange} />
-                <TextInput style={styles.input} type="text" placeholder="Time" name="time" label="Time Limit" value={this.state.time} onChangeText={this.handleTimeChange} />
+                {/* <TextInput style={styles.input} type="text" placeholder="Time" name="time" label="Time Limit" value={this.state.time} onChangeText={this.handleTimeChange} /> */}
             </View>
             <TouchableOpacity
                   style = {styles.submitButton}
@@ -107,7 +133,12 @@ class AddTimerScreen extends React.Component {
                   onPress = {this.handleSubmit}>
                <Text style = {styles.submitButtonText}> Submit </Text>
              </TouchableOpacity>
-            
+             <MyTimePicker
+                selectedMinutes={selectedMinutes}
+                selectedSeconds={selectedSeconds}
+                onChange={(minutes, seconds) => this.timePickerChange(minutes,seconds)}
+                />
+
         </View>
         );
     }

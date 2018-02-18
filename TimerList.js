@@ -84,6 +84,28 @@ class TimerList extends React.Component {
           />
         );
       }
+
+          /*
+        Summary: converts a number of seconds into a string of minutes and seconds
+        Parameters: number of seconds in time
+        Return: a string formatted to display the same number in minutes and seconds
+    */
+    secondsToTime = (seconds) => {
+
+        // internal function to pad the numbers
+        function pad(number, length) {
+            var str = '' + number;
+            while (str.length < length) {
+                str = '0' + str;
+            }
+            return str;
+        }
+
+        const minutes = (Math.floor((parseInt(seconds))/60));
+        const minutesToSeconds = minutes * 60;
+        const remainingSeconds = parseInt(seconds) - minutesToSeconds;
+        return `${pad(minutes,2)}:${pad(remainingSeconds,2)}`;
+    }
     
     render() {
         if (this.props.timers !== undefined){
@@ -96,7 +118,7 @@ class TimerList extends React.Component {
                 <FlatList
                     data = {this.props.timers}
                     ItemSeparatorComponent = {this.FlatListItemSeparator}
-                    renderItem={({item}) =><TimerItem  name={item.name} limit={item.limit} id={item.key} delete={this.props.delete} update={this.props.update} add={this.addTimer} remove={this.removeTimer} key={item.id}/> }
+                    renderItem={({item}) =><TimerItem  name={item.name} limit={item.limit} id={item.key} delete={this.props.delete} update={this.props.update} add={this.addTimer} remove={this.removeTimer} key={item.id} timeConverter={this.secondsToTime}/> }
                 />
                 </View>
             );
@@ -161,13 +183,16 @@ class TimerItem extends React.Component {
         
     }
 
+
     // If the user does not click on the timer item, a timer will not render
     render() {
+
+
         return (
             <View>
             <View className="timerItem" style={styles.rowText}>
                 <View>
-                    <Text style={styles.titleText} onPress={this.toggleRun} remove={this.props.remove} title="Timer">{this.props.name} - {this.props.limit}s </Text>
+                    <Text style={styles.titleText} onPress={this.toggleRun} remove={this.props.remove} title="Timer">{this.props.name} - {this.props.timeConverter(this.props.limit)} </Text>
                 </View>
                 <View style={styles.actionItems}>
                     <TouchableOpacity className="updateListing" onPress={this.makeUpdate} style={styles.updateBtn}>
@@ -185,7 +210,7 @@ class TimerItem extends React.Component {
                 </View>
             </View>
             <View>
-                {this.state.runTimer ? <Timer remove={this.props.remove} id={this.props.id} name={this.props.name} limit={this.props.limit}/> : null}
+                {this.state.runTimer ? <Timer remove={this.props.remove} id={this.props.id} name={this.props.name} limit={this.props.limit} timeConverter={this.props.timeConverter}/> : null}
             </View>
             </View>
         );
@@ -306,7 +331,7 @@ class Timer extends React.Component {
             return(<Text>Timer Complete</Text>);
         } else {
             return <View style={styles.activity}>
-                    <Text>Time remaining: {this.props.limit - this.state.time}</Text>
+                    <Text>Time remaining: {this.props.timeConverter(this.props.limit - this.state.time)}</Text>
                     <ActivityIndicator size="small" color="black" />
                 </View>
         }
