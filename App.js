@@ -85,7 +85,6 @@ class TimerContainerScreen extends Component {
           storedTimers: JSON.parse(value),
           isLoading: false
         });
-        console.log(JSON.parse(value));
 
     }).done();
 
@@ -123,7 +122,6 @@ class TimerContainerScreen extends Component {
             updateMode: false
           });
     
-          console.log("timer added - is it displayed?");
         }).done();
         
       }).done();
@@ -214,24 +212,7 @@ class TimerContainerScreen extends Component {
   isNumeric(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
-  // Preparing the data for the post request
-  handleSubmit = () => {
-    
-    if (this.state.title.length > 0 && this.isNumeric(this.state.time)) {
-    // handle post or update
-      if (this.state.updateMode === true) {
-         this.handlePut();
-      } else {
-         this.handlePost(this.state.title, this.state.time);
-      }
-      
-      this.setState({
-        title: "",
-        time: ""
-      });
-    }
-    
-  }
+
   
   generateTimers() {
     return <TimerList timers={this.state.storedTimers} delete={this.handleDelete} update={this.handleUpdate}/>

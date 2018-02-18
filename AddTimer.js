@@ -6,6 +6,7 @@ import {
   View,
   TextInput,
   TouchableOpacity,
+  TouchableHighlight,
   Picker
 } from 'react-native';
 import MyTimePicker from './MyTimePicker';
@@ -81,10 +82,7 @@ class AddTimerScreen extends React.Component {
         const { params } = this.props.navigation.state;
         const handlePost = params ? params.handlePost : null;
         const handlePut = params ? params.handlePut : null;
-        console.log("time check: ", this.state.selectedSeconds)
-        console.log("params: ", params);
-        console.log("HandleSubmit: ", this.props);
-        console.log('Checking for null ', this.state);
+        
 
         if (this.state.title !== undefined && this.state.time !== undefined){
             if ( this.state.title.length > 0 & this.isNumeric(this.state.time)) {
@@ -123,21 +121,21 @@ class AddTimerScreen extends React.Component {
 
         return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text>Enter a name and select a time</Text>
             <View style={styles.row}>
-                <TextInput style={styles.nameInput} type="text" placeholder="Name" name="title" label="Timer Name" value={this.state.title} onChangeText={this.handleNameChange} />
-                {/* <TextInput style={styles.input} type="text" placeholder="Time" name="time" label="Time Limit" value={this.state.time} onChangeText={this.handleTimeChange} /> */}
+                <TextInput  style={styles.nameInput} type="text" placeholder="Name" name="title" label="Timer Name" value={this.state.title} onChangeText={this.handleNameChange} />
             </View>
-            <TouchableOpacity
-                  style = {styles.submitButton}
-                  // onPress = {this.handleSubmit}>
-                  onPress = {this.handleSubmit}>
-               <Text style = {styles.submitButtonText}> Submit </Text>
-             </TouchableOpacity>
              <MyTimePicker
                 selectedMinutes={selectedMinutes}
                 selectedSeconds={selectedSeconds}
                 onChange={(minutes, seconds) => this.timePickerChange(minutes,seconds)}
                 />
+            <TouchableHighlight
+                  style = {styles.submitButton}
+                  // onPress = {this.handleSubmit}>
+                  onPress = {this.handleSubmit}>
+               <Text style = {styles.submitButtonText}> Submit </Text>
+             </TouchableHighlight>
 
         </View>
         );
@@ -190,6 +188,7 @@ const styles = StyleSheet.create({
     },
     submitButton: {
         backgroundColor: 'black',
+        width: '100%',
         padding: 10,
         margin: 15,
         height: 40,
@@ -198,20 +197,22 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
     },
     submitButtonText:{
-     
+        flex: 1,
         color: 'white'
     },
     row: {
+    
       display: 'flex',
       flexDirection: 'row',
-      justifyContent: 'space-around',
+      justifyContent: 'space-between',
+      margin: 30,
       marginTop: 50
+      
     },
     nameInput: {
-      margin: 15,
-        height: 40,
         borderColor: 'black',
-        borderBottomWidth: 2,
-        width: 175
+        borderBottomWidth: 1,
+        fontSize: 24,
+        width: '100%'
     }
   });

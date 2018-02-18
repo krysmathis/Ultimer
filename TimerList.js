@@ -191,8 +191,16 @@ class TimerItem extends React.Component {
         return (
             <View>
             <View className="timerItem" style={styles.rowText}>
-                <View>
-                    <Text style={styles.titleText} onPress={this.toggleRun} remove={this.props.remove} title="Timer">{this.props.name} - {this.props.timeConverter(this.props.limit)} </Text>
+                
+                <View style={{flex: 1}}>
+                    <TouchableOpacity
+                        onPress={this.toggleRun}
+                        style={styles.button}
+                    >
+                        <Text style={styles.titleText}>{this.props.name} </Text>
+                        <Text style={styles.time}>{this.props.timeConverter(this.props.limit)} </Text>
+           
+                    </TouchableOpacity>
                 </View>
                 <View style={styles.actionItems}>
                     <TouchableOpacity className="updateListing" onPress={this.makeUpdate} style={styles.updateBtn}>
@@ -352,17 +360,27 @@ const styles = StyleSheet.create({
       fontFamily: 'Cochin',
     },
     titleText: {
-      fontSize: 16,
+      fontSize: 20,
       fontWeight: 'bold',
+      maxWidth: '60%'
     },
-
+    time: {
+      fontSize: 18
+    },
+    button: {
+        display:'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+    },
     rowText: {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        height: 50,
-        paddingLeft: 20
+        justifyContent: 'space-around',
+        minHeight: 50,
+        paddingLeft: 20,
+        maxWidth: '100%'
       },
       // this is the row with the timer
       actionItems: {
@@ -389,7 +407,9 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-around',
+        margin: '10%',
+        width: '100%'
     },
     icon: {
         width: "1em",
