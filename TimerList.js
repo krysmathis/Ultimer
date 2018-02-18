@@ -35,8 +35,6 @@ class TimerList extends React.Component {
     */
     addTimer = (timerId) => {
 
-        
-
         const prevState = Object.assign({}, this.state);
         prevState.runningTimers.push(timerId)
         this.setState({

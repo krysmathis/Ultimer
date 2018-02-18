@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 
 
-class AddTimersScreen extends React.Component {
+class AddTimerScreen extends React.Component {
     static navigationOptions = {
         title: 'Create or Update Timers',
     };
@@ -113,7 +113,7 @@ class AddTimersScreen extends React.Component {
     }
 }
 
-export default AddTimersScreen;
+export default AddTimerScreen;
 
 const styles = StyleSheet.create({
     main: {

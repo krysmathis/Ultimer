@@ -16,7 +16,7 @@ import Modal from "react-native-modal";
 import TimerList from './TimerList.js';
 import { StackNavigator, TabNavigator } from 'react-navigation';
 // import the screens
-import AddTimersScreen from './AddTimers';
+import AddTimerScreen from './AddTimer';
 
 
 
@@ -191,7 +191,7 @@ class TimerContainerScreen extends Component {
   handleUpdate = (timerObj) => {
     
     // navigate to add timers and pass in the necessary props
-    this.props.navigation.navigate('AddTimers', {
+    this.props.navigation.navigate('AddTimer', {
       updateMode: true,
       title: timerObj.title,
       time: timerObj.time,
@@ -247,7 +247,7 @@ class TimerContainerScreen extends Component {
               <TouchableOpacity
                   style = {styles.submitButton}
                   // onPress = {this.handleSubmit}>
-                  onPress = {() => this.props.navigation.navigate('AddTimers',{
+                  onPress = {() => this.props.navigation.navigate('AddTimer',{
                     handlePost: this.handlePost,
                     title: this.state.name,
                     time: this.state.time
@@ -276,8 +276,8 @@ const RootStack = StackNavigator (
     Home: {
       screen: TimerContainerScreen,
     },
-    AddTimers: {
-      screen: AddTimersScreen,
+    AddTimer: {
+      screen: AddTimerScreen,
     },
   },
   {
