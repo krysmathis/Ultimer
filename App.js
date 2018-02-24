@@ -18,10 +18,6 @@ import { StackNavigator, TabNavigator } from 'react-navigation';
 // import the screens
 import AddTimerScreen from './AddTimer';
 
-
-
-
-
 // uuid Generatory
 const uuidGenerator = function* () {
   while (true) {
@@ -274,10 +270,6 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   main: {
-    // position: 'absolute',
-    // bottom: 0,
-    // left: 0
-    // backgroundColor: 'white'
   },
   modal: {
     flex: 1,

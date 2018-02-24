@@ -44,6 +44,7 @@ class TimerList extends React.Component {
         
         // if the user addes a timer, keep the app awake
         KeepAwake.activate();
+        console.log(this.state.runningTimers);
 
     }
 
@@ -109,9 +110,6 @@ class TimerList extends React.Component {
     
     render() {
         if (this.props.timers !== undefined){
-            // const listTimers = timers.map((timer, index) => 
-            //     <View key={timer.id}><TimerItem name={timer.name} limit={timer.limit} id={timer.id} delete={props.delete} /></View>
-            // );
             return (
                 <View>
                    
